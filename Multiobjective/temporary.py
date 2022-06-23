@@ -129,14 +129,18 @@ def tous_les_min_TFT_sols():
 set_F1U = tous_les_min_Cmax_sols()
 set_F2U = tous_les_min_TFT_sols()
 
-def f2(min_x1_sols,u):
-    # ([((0, 0, 0), 1.0), ((0, 1, 6), 1.0), ((1, 2, 0), 1.0)])
-    # Ps[j][u]
+def Generate_Cjs(sols,u):
     Cjs = {}
-    for tup in min_x1_sols:
+    for tup in sols:
         j = tup[1]
         t = tup[2]
         Cjs[j] = t + Ps[j]
+    return Cjs
+
+def f2(sols,u):
+    # ([((0, 0, 0), 1.0), ((0, 1, 6), 1.0), ((1, 2, 0), 1.0)])
+    # Ps[j][u]
+    Cjs = Generate_Cjs(sols, u)
     return sum(Cjs.values())
 
 def F2(set_F1U):
@@ -159,11 +163,7 @@ def f1(sols, u):
         u: scenario
         
     '''
-    Cjs = {}
-    for tup in sols:
-        j = tup[1]
-        t = tup[2]
-        Cjs[j] = t + Ps[j]
+    Cjs = Generate_Cjs(sols,u)
     
     return max(Cjs.values())
         

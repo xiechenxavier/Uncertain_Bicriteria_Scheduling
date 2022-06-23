@@ -18,7 +18,7 @@ with open("Gene_Experiment/Gurobi/scheduling_part/Uncertain_Bicriteria_Schedulin
     J = set(map(int,lines[1].strip('\n').split(',')))
     # scenario set
     # U = set(map(int,lines[2].strip('\n').split(',')))
-    U = set([u for u in range(1,7)])
+    U = set([u for u in range(1,2)])
     
     Kj = list(map(int,lines[2].strip('\n').split(',')))
     Bj = list(map(int,lines[3].strip('\n').split(',')))
@@ -152,22 +152,24 @@ set_F2U = tous_les_min_TFT_sols()
 # print(set_F2U)
 
 # set a function f2(x1*,u): compute the objective value of f2 for x1* 
-def f2(min_x1_sols,u):
-    # ([((0, 0, 0), 1.0), ((0, 1, 6), 1.0), ((1, 2, 0), 1.0)])
-    # Ps[j][u]
+def Generate_Cjs(sols,u):
     Cjs = {}
-    for tup in min_x1_sols:
+    for tup in sols:
         j = tup[1]
         t = tup[2]
         Cjs[j] = t + Ps[j][u]
+    return Cjs
+
+def f2(sols,u):
+    # ([((0, 0, 0), 1.0), ((0, 1, 6), 1.0), ((1, 2, 0), 1.0)])
+    # Ps[j][u]
+    Cjs = Generate_Cjs(sols, u)
     return sum(Cjs.values())
 
 def F2(set_F1U):
     
     F2U = {}
     for u in U:
-        if u == 0:
-            continue
         min_x1_sols = set_F1U[u][1]
         F2U[u] = f2(min_x1_sols,u)
     
@@ -184,11 +186,7 @@ def f1(sols, u):
         u: scenario
         
     '''
-    Cjs = {}
-    for tup in sols:
-        j = tup[1]
-        t = tup[2]
-        Cjs[j] = t + Ps[j][u]
+    Cjs = Generate_Cjs(sols,u)
     
     return max(Cjs.values())
         
