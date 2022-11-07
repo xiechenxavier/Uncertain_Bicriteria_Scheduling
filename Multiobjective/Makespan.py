@@ -12,7 +12,7 @@ import gurobipy
 
 # create data set
 
-with open("Gene_Experiment/Gurobi/scheduling_part/Uncertain_Bicriteria_Scheduling/Multiobjective/toy.txt") as f:
+with open("Gene_Experiment/Gurobi/scheduling_part/Uncertain_Bicriteria_Scheduling/Multiobjective/instances/toy.txt") as f:
     lines = f.readlines()
     M = set(map(int,lines[0].strip('\n').split(',')))
     # jobs set

@@ -7,7 +7,7 @@ Created on Tue Sep 27 05:53:12 2022
 """
 import numpy as np
 
-with open("Gene_Experiment/Gurobi/scheduling_part/Uncertain_Bicriteria_Scheduling/Multiobjective/temp_toy.txt") as f:
+with open("Gene_Experiment/Gurobi/scheduling_part/Uncertain_Bicriteria_Scheduling/Multiobjective/instances/temp_toy.txt") as f:
     lines = f.readlines()
     M = set(map(int,lines[0].strip('\n').split(',')))
     # jobs set
