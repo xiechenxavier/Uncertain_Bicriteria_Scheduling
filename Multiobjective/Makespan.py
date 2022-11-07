@@ -12,15 +12,15 @@ import gurobipy
 
 # create data set
 
-with open("Gene_Experiment/Gurobi/scheduling_part/Uncertain_Bicriteria_Scheduling/Multiobjective/Truc.txt") as f:
+with open("Gene_Experiment/Gurobi/scheduling_part/Uncertain_Bicriteria_Scheduling/Multiobjective/toy.txt") as f:
     lines = f.readlines()
     M = set(map(int,lines[0].strip('\n').split(',')))
     # jobs set
     J = set(map(int,lines[1].strip('\n').split(',')))
     # scenario set
-    U = set([u for u in range(0,30)])
+    U = set([u for u in range(1,10)])
     
-    Kj = list(map(int,lines[2].strip('\n').split(',')))
+    Kj = list(map(int,lines[2].strip('\n').split(','))) #
     Bj = list(map(int,lines[3].strip('\n').split(',')))
     
 # varies function
@@ -28,7 +28,7 @@ def vary_function(kj,U,bj):
     P = {}
     for u in U:
         p_u = kj*u + bj
-        P[u] = p_u
+        P[u] = (p_u) #
     return P
 
 
@@ -52,14 +52,14 @@ def packageData(J, U , Ps):
     return packed_qijr
 
 packed_Ps = packageData(J, U, Ps)
-print(packed_Ps.at[1,2])
+# print(packed_Ps.at[1,2])
 
 # compute the upper bounded time
 def compute_upper_time(u):
     utime = 0
     for j in J:
         utime += Ps[j][u]
-    return utime
+    return int(utime) #
 
 # add all upper time in the list
 def UpperBoundTime(U):
@@ -108,7 +108,7 @@ def configuration_model(packed_Ps,u,obj,epsilon):
     
     m.addConstrs(gurobipy.quicksum(x[i,j,h]
                                    for j in J
-                                   for h in range(max(0,t-packed_Ps.at[j,u]), t)
+                                   for h in range(max(0,int(t-packed_Ps.at[j,u])), t)
                                    ) <=1 
                                          for i in M
                                          for t in time)

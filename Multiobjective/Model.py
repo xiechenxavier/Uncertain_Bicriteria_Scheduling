@@ -11,14 +11,14 @@ import gurobipy
 
 # create data set
 
-with open("Gene_Experiment/Gurobi/scheduling_part/Uncertain_Bicriteria_Scheduling/Multiobjective/toy2.txt") as f:
+with open("Gene_Experiment/Gurobi/scheduling_part/Uncertain_Bicriteria_Scheduling/Multiobjective/toy.txt") as f:
     lines = f.readlines()
     M = set(map(int,lines[0].strip('\n').split(',')))
     # jobs set
     J = set(map(int,lines[1].strip('\n').split(',')))
     # scenario set
     # U = set(map(int,lines[2].strip('\n').split(',')))
-    U = set([u for u in range(1,2)])
+    U = set([u for u in range(1,10)])
     
     Kj = list(map(int,lines[2].strip('\n').split(',')))
     Bj = list(map(int,lines[3].strip('\n').split(',')))
@@ -128,118 +128,118 @@ def configuration_model(packed_Ps,u,obj,epsilon):
 
     return m.objVal,tuple(X)
 
-def tous_les_min_Cmax_sols():
-    set_F1U = {}
-    for u in U:
-        if u == 0:
-            continue
-        set_F1U[u] = configuration_model(packed_Ps,u,'f1',0)
+# def tous_les_min_Cmax_sols():
+#     set_F1U = {}
+#     for u in U:
+#         if u == 0:
+#             continue
+#         set_F1U[u] = configuration_model(packed_Ps,u,'f1',0)
     
-    return set_F1U
+#     return set_F1U
 
-def tous_les_min_TFT_sols():
-    set_F2U = {}
-    for u in U:
-        if u == 0:
-            continue
-        set_F2U[u] = configuration_model(packed_Ps, u, 'f2',0)
+# def tous_les_min_TFT_sols():
+#     set_F2U = {}
+#     for u in U:
+#         if u == 0:
+#             continue
+#         set_F2U[u] = configuration_model(packed_Ps, u, 'f2',0)
     
-    return set_F2U
+#     return set_F2U
     
-set_F1U = tous_les_min_Cmax_sols()
-set_F2U = tous_les_min_TFT_sols()
-# print(set_F1U)
-# print(set_F2U)
+# set_F1U = tous_les_min_Cmax_sols()
+# set_F2U = tous_les_min_TFT_sols()
+# # print(set_F1U)
+# # print(set_F2U)
 
-# set a function f2(x1*,u): compute the objective value of f2 for x1* 
-def Generate_Cjs(sols,u):
-    Cjs = {}
-    for tup in sols:
-        j = tup[1]
-        t = tup[2]
-        Cjs[j] = t + Ps[j][u]
-    return Cjs
+# # set a function f2(x1*,u): compute the objective value of f2 for x1* 
+# def Generate_Cjs(sols,u):
+#     Cjs = {}
+#     for tup in sols:
+#         j = tup[1]
+#         t = tup[2]
+#         Cjs[j] = t + Ps[j][u]
+#     return Cjs
 
-def f2(sols,u):
-    # ([((0, 0, 0), 1.0), ((0, 1, 6), 1.0), ((1, 2, 0), 1.0)])
-    # Ps[j][u]
-    Cjs = Generate_Cjs(sols, u)
-    return sum(Cjs.values())
+# def f2(sols,u):
+#     # ([((0, 0, 0), 1.0), ((0, 1, 6), 1.0), ((1, 2, 0), 1.0)])
+#     # Ps[j][u]
+#     Cjs = Generate_Cjs(sols, u)
+#     return sum(Cjs.values())
 
-def F2(set_F1U):
+# def F2(set_F1U):
     
-    F2U = {}
-    for u in U:
-        min_x1_sols = set_F1U[u][1]
-        F2U[u] = f2(min_x1_sols,u)
+#     F2U = {}
+#     for u in U:
+#         min_x1_sols = set_F1U[u][1]
+#         F2U[u] = f2(min_x1_sols,u)
     
-    return F2U
+#     return F2U
 
-F2U = F2(set_F1U)
-print(F2U)
+# F2U = F2(set_F1U)
+# print(F2U)
 
-def f1(sols, u):
-    '''
-    This function is used to compute the objective value of f1
-    input : 
-        sols ex:((0, 0, 15), (0, 1, 0), (1, 2, 0))
-        u: scenario
+# def f1(sols, u):
+#     '''
+#     This function is used to compute the objective value of f1
+#     input : 
+#         sols ex:((0, 0, 15), (0, 1, 0), (1, 2, 0))
+#         u: scenario
         
-    '''
-    Cjs = Generate_Cjs(sols,u)
+#     '''
+#     Cjs = Generate_Cjs(sols,u)
     
-    return max(Cjs.values())
+#     return max(Cjs.values())
         
-def possible_Pareto_sols(set_F1U,F2U,u):
+# def possible_Pareto_sols(set_F1U,F2U,u):
     
-    epsilon_u = F2U[u]
-    set_PO_u = {}
+#     epsilon_u = F2U[u]
+#     set_PO_u = {}
     
-    while epsilon_u >= set_F2U[u][0]:
-        f1_eps = configuration_model(packed_Ps,u,'f1',epsilon_u)
-        set_PO_u[(epsilon_u,f1_eps[0])] = f1_eps[1]
-        epsilon_u -= 1
-    return set_PO_u
+#     while epsilon_u >= set_F2U[u][0]:
+#         f1_eps = configuration_model(packed_Ps,u,'f1',epsilon_u)
+#         set_PO_u[(epsilon_u,f1_eps[0])] = f1_eps[1]
+#         epsilon_u -= 1
+#     return set_PO_u
     
-Pareto_sols_1 = possible_Pareto_sols(set_F1U, F2U, 1)
+# # Pareto_sols_1 = possible_Pareto_sols(set_F1U, F2U, 1)
 
-# drop repeative solutions
-print(set(Pareto_sols_1.values()))
+# # drop repeative solutions
+# # print(set(Pareto_sols_1.values()))
 
-# continuite drop dominated solutions
-def Pareto_set(u):
-    '''
-    objective:
-    return a pareto set through dropping all dominated solutions
-    from a possible pareto solutions
+# # continuite drop dominated solutions
+# def Pareto_set(u):
+#     '''
+#     objective:
+#     return a pareto set through dropping all dominated solutions
+#     from a possible pareto solutions
 
-    '''
-    Pareto_sols_1 = set(possible_Pareto_sols(set_F1U, F2U, u).values())
-    Pareto_sols_2 = Pareto_sols_1
-    for x1 in Pareto_sols_1:
-        for x2 in Pareto_sols_1-{x1}:
-            f1_x1_u = f1(x1,u)
-            f2_x1_u = f2(x1,u)
-            f1_x2_u = f1(x2,u)
-            f2_x2_u = f2(x2,u)
+#     '''
+#     Pareto_sols_1 = set(possible_Pareto_sols(set_F1U, F2U, u).values())
+#     Pareto_sols_2 = Pareto_sols_1
+#     for x1 in Pareto_sols_1:
+#         for x2 in Pareto_sols_1-{x1}:
+#             f1_x1_u = f1(x1,u)
+#             f2_x1_u = f2(x1,u)
+#             f1_x2_u = f1(x2,u)
+#             f2_x2_u = f2(x2,u)
             
-            if (f1_x1_u <= f1_x2_u and f2_x1_u <= f2_x2_u) and(f1_x1_u < f1_x2_u or f2_x1_u < f2_x2_u):
+#             if (f1_x1_u <= f1_x2_u and f2_x1_u <= f2_x2_u) and(f1_x1_u < f1_x2_u or f2_x1_u < f2_x2_u):
                 
-                Pareto_sols_2 = Pareto_sols_2 - {x2}
+#                 Pareto_sols_2 = Pareto_sols_2 - {x2}
             
-    return Pareto_sols_2
+#     return Pareto_sols_2
             
-def all_scenario_Pareto_set(U):
+# def all_scenario_Pareto_set(U):
     
-    Pareto_setU = {}
-    for u in U:
-        if u == 0:
-            continue
-        Pareto_setU[u] = Pareto_set(u)
+#     Pareto_setU = {}
+#     for u in U:
+#         if u == 0:
+#             continue
+#         Pareto_setU[u] = Pareto_set(u)
         
-    return Pareto_setU
+#     return Pareto_setU
 
-print(all_scenario_Pareto_set(U))  
+# print(all_scenario_Pareto_set(U))  
     
     
     
